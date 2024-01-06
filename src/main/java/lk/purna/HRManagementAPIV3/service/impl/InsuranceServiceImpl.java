@@ -1,7 +1,9 @@
 package lk.purna.HRManagementAPIV3.service.impl;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import lk.purna.HRManagementAPIV3.controller.model.Employee;
 import lk.purna.HRManagementAPIV3.controller.model.Insurance;
+import lk.purna.HRManagementAPIV3.controller.repository.EmployeeRepository;
 import lk.purna.HRManagementAPIV3.controller.repository.InsuranceRepository;
 import lk.purna.HRManagementAPIV3.controller.request.CreateInsuranceRq;
 import lk.purna.HRManagementAPIV3.controller.response.CreateDepartmentResponse2;
@@ -9,6 +11,7 @@ import lk.purna.HRManagementAPIV3.controller.response.CreateInsuranceResponse;
 import lk.purna.HRManagementAPIV3.controller.response.CreateInsuranceResponse2;
 import lk.purna.HRManagementAPIV3.controller.response.MessageResponse;
 import lk.purna.HRManagementAPIV3.service.InsuranceService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.context.LifecycleAutoConfiguration;
 import org.springframework.stereotype.Service;
@@ -18,10 +21,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class InsuranceServiceImpl implements InsuranceService {
 
-    @Autowired
+
     private InsuranceRepository insuranceRepository;
+
+    private EmployeeRepository employeeRepository;
 
 
     @Override
@@ -153,6 +159,39 @@ public class InsuranceServiceImpl implements InsuranceService {
 
         return insuranceList.stream().map(insurance -> CreateInsuranceResponse2.builder().id(insurance.getId()).type(insurance.getType()).company(insurance.getCompany()).build()).toList();
 
+
+    }
+
+
+    //insurance service
+
+    public CreateInsuranceResponse create(Long id,CreateInsuranceRq createInsuranceRq){
+
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+
+        if (optionalEmployee.isPresent()){
+
+            Employee employee = optionalEmployee.get();
+
+            Insurance insurance = new Insurance();
+
+            insurance.setType(createInsuranceRq.getType());
+            insurance.setCompany(createInsuranceRq.getCompany());
+            insurance.setEmployee(employee);
+
+            insuranceRepository.save(insurance);
+
+            CreateInsuranceResponse createInsuranceResponse = new CreateInsuranceResponse();
+
+            createInsuranceResponse.setId(insurance.getId());
+            createInsuranceResponse.setCompany(insurance.getCompany());
+            createInsuranceResponse.setType(insurance.getType());
+
+            return createInsuranceResponse;
+
+        }
+
+        return null;
 
     }
 

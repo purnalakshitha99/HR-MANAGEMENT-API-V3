@@ -23,4 +23,6 @@ public interface InsuranceService {
     CreateInsuranceResponse update(int id, CreateInsuranceRq createInsuranceRq);
 
     List<CreateInsuranceResponse2> getAll2(CreateInsuranceRq createInsuranceRq);
+
+    CreateInsuranceResponse create(Long id,CreateInsuranceRq createInsuranceRq);
 }

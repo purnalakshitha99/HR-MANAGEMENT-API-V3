@@ -48,4 +48,18 @@ public class InsuranceController {
     public CreateInsuranceResponse update(@PathVariable int id,@RequestBody CreateInsuranceRq createInsuranceRq){
         return insuranceService.update(id,createInsuranceRq);
     }
+
+
+    //insurance
+
+    @PostMapping("/employees/{id}/insurances")
+    public CreateInsuranceResponse create(@PathVariable Long id,@RequestBody CreateInsuranceRq createInsuranceRq){
+
+
+        System.out.println("insurance create ");
+
+     return    insuranceService.create(id,createInsuranceRq);
+
+
+    }
 }
