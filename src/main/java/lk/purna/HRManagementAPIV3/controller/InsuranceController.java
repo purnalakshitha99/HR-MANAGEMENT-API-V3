@@ -7,6 +7,7 @@ import lk.purna.HRManagementAPIV3.controller.response.CreateInsuranceResponse2;
 import lk.purna.HRManagementAPIV3.controller.response.IdResponse;
 import lk.purna.HRManagementAPIV3.controller.response.MessageResponse;
 import lk.purna.HRManagementAPIV3.exception.EmployeeNotFoundException;
+import lk.purna.HRManagementAPIV3.exception.InsuranceNotFoundException;
 import lk.purna.HRManagementAPIV3.service.InsuranceService;
 import org.hibernate.metamodel.mapping.internal.IdClassRepresentationStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ public class InsuranceController {
 
 
     @PutMapping("/employees/{employee-id}/insurances/{insurance-id}")
-    public CreateInsuranceResponse updateInsurance(@PathVariable("employee-id") Long employeeId ,@PathVariable("insurance-id")Long insuranceId,@RequestBody CreateInsuranceRq createInsuranceRq){
+    public CreateInsuranceResponse updateInsurance(@PathVariable("employee-id") Long employeeId ,@PathVariable("insurance-id")Long insuranceId,@RequestBody CreateInsuranceRq createInsuranceRq)throws EmployeeNotFoundException, InsuranceNotFoundException {
 
         System.out.println("updateInsurances");
 
@@ -78,12 +79,20 @@ public class InsuranceController {
 
 
     @DeleteMapping("/employees/{employee-id}/insurances/{insurance-id}")
-    public IdResponse deleteInsurances(@PathVariable("employee-id")Long employeeId,@PathVariable("insurance-id")Long insurancesId){
+    public IdResponse deleteInsurances(@PathVariable("employee-id")Long employeeId,@PathVariable("insurance-id")Long insurancesId)throws InsuranceNotFoundException,EmployeeNotFoundException{
 
         System.out.println("delelele insurance by employee");
 
         return  insuranceService.deleteInsurances(employeeId,insurancesId);
 
 
+    }
+
+
+    @GetMapping("/employees/{employee-id}/insurances/{insurance-id}")
+    public CreateInsuranceResponse getSpecificInsurance(@PathVariable("employee-id")Long employeeId,@PathVariable("insurance-id")Long insuranceId)throws EmployeeNotFoundException,InsuranceNotFoundException{
+        System.out.println("get specific insurance by employee");
+
+      return   insuranceService.getSpecificInsurance(employeeId,insuranceId);
     }
 }

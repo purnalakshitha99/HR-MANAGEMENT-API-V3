@@ -8,6 +8,7 @@ import lk.purna.HRManagementAPIV3.controller.repository.InsuranceRepository;
 import lk.purna.HRManagementAPIV3.controller.request.CreateInsuranceRq;
 import lk.purna.HRManagementAPIV3.controller.response.*;
 import lk.purna.HRManagementAPIV3.exception.EmployeeNotFoundException;
+import lk.purna.HRManagementAPIV3.exception.InsuranceNotFoundException;
 import lk.purna.HRManagementAPIV3.service.InsuranceService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,7 +170,7 @@ public class InsuranceServiceImpl implements InsuranceService {
 
         if (!optionalEmployee.isPresent()){
 
-           throw new EmployeeNotFoundException("that employee not in the system "+id);
+           throw new EmployeeNotFoundException("That employee not in the system "+id);
 
         }
 
@@ -194,40 +195,42 @@ public class InsuranceServiceImpl implements InsuranceService {
     }
 
     @Override
-    public CreateInsuranceResponse updateInsurances(Long employeeId,Long insuranceId, CreateInsuranceRq createInsuranceRq) {
+    public CreateInsuranceResponse updateInsurances(Long employeeId,Long insuranceId, CreateInsuranceRq createInsuranceRq)throws EmployeeNotFoundException, InsuranceNotFoundException {
 
         Optional<Employee> employeeOptional = employeeRepository.findById(employeeId);
 
         CreateInsuranceResponse createInsuranceResponse = new CreateInsuranceResponse();
-        if (employeeOptional.isPresent()){
-
-            Employee employee = employeeOptional.get();
-            List<Insurance>insuranceList = employee.getInsurancesList();
-
-
-
-           Insurance insuranceToUpdate = insuranceList.stream()
-                   .filter(insurance -> insurance.getId().equals(insuranceId)).findFirst().orElse(null);
-
-            if (insuranceToUpdate!=null){
-
-                insuranceToUpdate.setCompany(createInsuranceRq.getCompany());
-                insuranceToUpdate.setType(createInsuranceRq.getType());
-
-                insuranceToUpdate.setEmployee(employee);
-
-                insuranceRepository.save(insuranceToUpdate);
-
-                createInsuranceResponse.setId(insuranceId);
-                createInsuranceResponse.setCompany(insuranceToUpdate.getCompany());
-                createInsuranceResponse.setType(insuranceToUpdate.getType());
-
-
-
-
-            }
+        if (!employeeOptional.isPresent()){
+            System.out.println("That employee not in the system :"+employeeId);
+            throw new EmployeeNotFoundException("That employee not in the system");
 
         }
+        Employee employee = employeeOptional.get();
+        List<Insurance>insuranceList = employee.getInsurancesList();
+
+
+
+        Insurance insuranceToUpdate = insuranceList.stream()
+                .filter(insurance -> insurance.getId().equals(insuranceId)).findFirst().orElse(null);
+
+        if (insuranceToUpdate == null){
+            System.out.println("That Insurance not in the system :"+insuranceId);
+            throw new InsuranceNotFoundException("That Insurance Not in the system");
+
+
+
+        }
+        insuranceToUpdate.setCompany(createInsuranceRq.getCompany());
+        insuranceToUpdate.setType(createInsuranceRq.getType());
+
+        insuranceToUpdate.setEmployee(employee);
+
+        insuranceRepository.save(insuranceToUpdate);
+
+        createInsuranceResponse.setId(insuranceId);
+        createInsuranceResponse.setCompany(insuranceToUpdate.getCompany());
+        createInsuranceResponse.setType(insuranceToUpdate.getType());
+
 
         return createInsuranceResponse;
 
@@ -239,12 +242,20 @@ public class InsuranceServiceImpl implements InsuranceService {
 
 
 
-    public IdResponse deleteInsurances(Long employeeId, Long insuranceId) {
+
+    public IdResponse deleteInsurances(Long employeeId, Long insuranceId) throws EmployeeNotFoundException,InsuranceNotFoundException{
         Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
         IdResponse idResponse = new IdResponse();
-        if (optionalEmployee.isPresent()) {
+        if (!optionalEmployee.isPresent()) {
+            System.out.println("That employee Not found in the system "+employeeId);
+            throw new EmployeeNotFoundException("That employee Not found in the system");
+        }
+        else {
+
+
+
             Employee employee = optionalEmployee.get();
-           List<Insurance> insuranceList = employee.getInsurancesList();
+            List<Insurance> insuranceList = employee.getInsurancesList();
 
 
 //            System.out.println(insuranceList);
@@ -255,6 +266,10 @@ public class InsuranceServiceImpl implements InsuranceService {
                     .orElse(null);
 
             if (insuranceToDelete != null) {
+                System.out.println("That Insurance Not in the system "+insuranceId);
+               throw new InsuranceNotFoundException("That Insurance Not in the system "+insuranceId);
+            }
+            else {
                 insuranceList.remove(insuranceToDelete);
 //                employeeRepository.save(employee);
                 insuranceRepository.deleteById(insuranceId);
@@ -262,24 +277,41 @@ public class InsuranceServiceImpl implements InsuranceService {
 
                 idResponse.setId(insuranceId);
                 return idResponse;
-            }
-            else {
-
-                System.out.println("insurance not found for the given employee");
 
             }
         }
-        else {
 
-            System.out.println("emp not found");
+
+    }
+
+    @Override
+    public CreateInsuranceResponse getSpecificInsurance(Long employeeId, Long insuranceId) throws InsuranceNotFoundException,EmployeeNotFoundException{
+
+        Optional<Employee> employeeOptional = employeeRepository.findById(employeeId);
+        CreateInsuranceResponse createInsuranceResponse = new CreateInsuranceResponse();
+        if (!employeeOptional.isPresent()){
+            System.out.println("That Employee not in the this System "+employeeId);
+           throw new EmployeeNotFoundException("That Employee not in the this system "+employeeId);
         }
+        Employee employee = employeeOptional.get();
+        List<Insurance> insuranceList = employee.getInsurancesList();
 
-        return idResponse;
+        Insurance insuranceListToGet = insuranceList.stream().filter(insurance -> insurance.getId().equals(insuranceId)).findFirst().orElse(null);
+
+        if (insuranceListToGet == null){
+            System.out.println("That Insurance not in the this System "+insuranceId);
+            throw new InsuranceNotFoundException("That Insurance not in the this System");
+
+
+        }
+        createInsuranceResponse.setId(insuranceId);
+        createInsuranceResponse.setType(insuranceListToGet.getType());
+        createInsuranceResponse.setCompany(insuranceListToGet.getCompany());
+        return createInsuranceResponse;
     }
 
 
-
-    }
+}
 
 
 
