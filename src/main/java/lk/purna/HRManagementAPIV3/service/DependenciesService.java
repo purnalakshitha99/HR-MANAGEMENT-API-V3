@@ -28,4 +28,6 @@ public interface DependenciesService {
     DependenciesResponse update(Long id, DependenciesRq dependenciesRq);
 
     DependenciesResponse addDependencies(Long employeeId,DependenciesRq dependenciesRq)throws  EmployeeNotFoundException;
+
+    List<DependenciesResponse2> getDependencies(Long employeeId)throws EmployeeNotFoundException;
 }

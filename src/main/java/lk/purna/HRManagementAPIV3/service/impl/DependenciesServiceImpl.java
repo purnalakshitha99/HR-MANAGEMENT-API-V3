@@ -173,4 +173,33 @@ public class DependenciesServiceImpl implements DependenciesService {
 
         return dependenciesResponse;
     }
+
+   public List<DependenciesResponse2> getDependencies(Long employeeId)throws EmployeeNotFoundException{
+
+        Optional<Employee> employeeOptional = employeeRepository.findById(employeeId);
+
+        List<DependenciesResponse2> dependenciesResponse2List = new ArrayList<>();
+
+        if (employeeOptional.isPresent()){
+
+           throw new EmployeeNotFoundException("That Employee not found in the system "+employeeId);
+
+        }
+
+       Employee employee = employeeOptional.get();
+       List<Dependencies>dependenciesList = employee.getDependenciesList();
+
+       if (dependenciesList != null){
+
+           dependenciesResponse2List =  dependenciesList.stream()
+                   .map(dependencies -> DependenciesResponse2.builder()
+                           .id(dependencies.getId())
+                           .relationship(dependencies.getRelationship())
+                           .total(dependencies.getTotal())
+                           .build()).toList();
+       }
+
+        return dependenciesResponse2List;
+
+   }
 }

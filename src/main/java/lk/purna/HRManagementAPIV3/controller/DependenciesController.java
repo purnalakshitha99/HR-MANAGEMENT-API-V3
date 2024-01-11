@@ -70,4 +70,14 @@ public class DependenciesController {
       return   dependenciesService.addDependencies(employeeId,dependenciesRq);
     }
 
+
+    @GetMapping("/employees/{employee-id}/dependencies")
+    public List<DependenciesResponse2> getDependencies(@PathVariable("employee-id")Long employeeId)throws EmployeeNotFoundException{
+        System.out.println("get dependecies for employee");
+
+      return   dependenciesService.getDependencies(employeeId);
+    }
+
+
+
 }
