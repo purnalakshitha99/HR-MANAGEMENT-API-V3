@@ -180,8 +180,8 @@ public class DependenciesServiceImpl implements DependenciesService {
 
         List<DependenciesResponse2> dependenciesResponse2List = new ArrayList<>();
 
-        if (employeeOptional.isPresent()){
-
+        if (!employeeOptional.isPresent()){
+            System.out.println("That Employee not found in the system "+employeeId);
            throw new EmployeeNotFoundException("That Employee not found in the system "+employeeId);
 
         }
@@ -211,7 +211,8 @@ public class DependenciesServiceImpl implements DependenciesService {
 
 
 
-        if (employeeOptional.isPresent()){
+        if (!employeeOptional.isPresent()){
+            System.out.println("Employee Not Found in this System "+employeeId);
             throw new EmployeeNotFoundException("Employee Not Found in this System "+employeeId);
 
         }
@@ -223,7 +224,7 @@ public class DependenciesServiceImpl implements DependenciesService {
 
         if (dependenciesToGetSpecific == null){
 
-
+            System.out.println("Dependencies not found in that system "+dependenciesId);
             throw new DependenciesNotFoundException("Dependencies not found in that system "+dependenciesId);
 
 
@@ -232,6 +233,40 @@ public class DependenciesServiceImpl implements DependenciesService {
         dependenciesResponse.setTotal(dependenciesToGetSpecific.getTotal());
         dependenciesResponse.setRelationship(dependenciesToGetSpecific.getRelationship());
 
+        return dependenciesResponse;
+    }
+
+
+    public DependenciesResponse updateSpecificDependencies(Long employeeId,Long dependenciesId,DependenciesRq dependenciesRq){
+
+        Optional<Employee> employeeOptional = employeeRepository.findById(employeeId);
+        DependenciesResponse dependenciesResponse = new DependenciesResponse();
+
+        if (employeeOptional.isPresent()){
+
+            Employee employee = employeeOptional.get();
+            List<Dependencies> dependenciesList = employee.getDependenciesList();
+
+            Dependencies dependenciesListToUpdate = dependenciesList.stream().filter(dependencies -> dependencies.getId().equals(dependenciesId)).findFirst().orElse(null);
+
+
+            if (dependenciesListToUpdate != null){
+
+                dependenciesListToUpdate.setId(dependenciesId);
+                dependenciesListToUpdate.setTotal(dependenciesRq.getTotal());
+                dependenciesListToUpdate.setRelationship(dependenciesRq.getRelationship());
+
+                dependenciesListToUpdate.setEmployee(employee);
+
+                dependenciesRepository.save(dependenciesListToUpdate);
+
+             dependenciesResponse.setRelationship(dependenciesListToUpdate.getRelationship());
+             dependenciesResponse.setId(dependenciesId);
+             dependenciesResponse.setTotal(dependenciesListToUpdate.getTotal());
+
+
+            }
+        }
         return dependenciesResponse;
     }
 }

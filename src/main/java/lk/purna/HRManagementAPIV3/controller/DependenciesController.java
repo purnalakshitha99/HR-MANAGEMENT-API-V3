@@ -83,8 +83,16 @@ public class DependenciesController {
     public DependenciesResponse getSpecificDependencies(@PathVariable("employee-id")Long employeeId,@PathVariable("dependencies-id")Long dependenciesId)throws EmployeeNotFoundException,DependenciesNotFoundException{
 
         System.out.println("get specific dependencies for employee");
-
+        System.out.println(employeeId);
+        System.out.println(dependenciesId);
       return   dependenciesService.getSpecificDependencies(employeeId,dependenciesId);
+    }
+
+    @PutMapping("/employees/{employee-id}/dependencies/{dependencies-id}")
+    public DependenciesResponse updateSpecificDependencies(@PathVariable("employee-id")Long employeeId,@PathVariable("dependencies-id")Long dependenciesId,@RequestBody DependenciesRq dependenciesRq)throws EmployeeNotFoundException,DependenciesNotFoundException{
+        System.out.println("update specific dependencies for employee");
+
+      return   dependenciesService.updateSpecificDependencies(employeeId,dependenciesId,dependenciesRq);
     }
 
 }
