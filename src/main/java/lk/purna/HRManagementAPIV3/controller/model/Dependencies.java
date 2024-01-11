@@ -13,6 +13,7 @@ public class Dependencies {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer total;
+    private String relationship;
 
     @ManyToOne
     private Employee employee;

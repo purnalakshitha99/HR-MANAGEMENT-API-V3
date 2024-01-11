@@ -16,7 +16,6 @@ public class DependenciesController {
 
     private DependenciesService dependenciesService;
 
-
     @PostMapping("/dependencies")
     public DependenciesResponse add(@RequestBody DependenciesRq dependenciesRq){
         System.out.println("added");
@@ -60,5 +59,13 @@ public class DependenciesController {
        return dependenciesService.update(id,dependenciesRq);
     }
 
+
+    //dependencies add for employee
+    @PostMapping("/employees/{employee-id}/dependencies")
+    public DependenciesResponse addDependencies(@PathVariable("employee-id")Long employeeId,@RequestBody DependenciesRq dependenciesRq){
+        System.out.println("add dependencies for employee");
+
+      return   dependenciesService.addDependencies(employeeId,dependenciesRq);
+    }
 
 }

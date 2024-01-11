@@ -1,7 +1,9 @@
 package lk.purna.HRManagementAPIV3.service.impl;
 
 import lk.purna.HRManagementAPIV3.controller.model.Dependencies;
+import lk.purna.HRManagementAPIV3.controller.model.Employee;
 import lk.purna.HRManagementAPIV3.controller.repository.DependenciesRepository;
+import lk.purna.HRManagementAPIV3.controller.repository.EmployeeRepository;
 import lk.purna.HRManagementAPIV3.controller.request.DependenciesRq;
 import lk.purna.HRManagementAPIV3.controller.response.DependenciesResponse;
 import lk.purna.HRManagementAPIV3.controller.response.DependenciesResponse2;
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class DependenciesServiceImpl implements DependenciesService {
 
     private DependenciesRepository dependenciesRepository;
+    private EmployeeRepository employeeRepository;
 
 
     @Override
@@ -135,5 +138,36 @@ public class DependenciesServiceImpl implements DependenciesService {
 
         return null;
 
+    }
+
+    @Override
+    public DependenciesResponse addDependencies(Long employeeId,DependenciesRq dependenciesRq) {
+
+        Optional<Employee> employeeOptional = employeeRepository.findById(employeeId);
+
+        DependenciesResponse dependenciesResponse = new DependenciesResponse();
+
+        if (employeeOptional.isPresent()){
+
+            Employee employee = employeeOptional.get();
+
+            Dependencies dependencies = new Dependencies();
+
+            dependencies.setTotal(dependenciesRq.getTotal());
+            dependencies.setRelationship(dependenciesRq.getRelationship());
+
+            dependencies.setEmployee(employee);
+
+            dependenciesRepository.save(dependencies);
+
+            dependenciesResponse.setTotal(dependencies.getTotal());
+            dependenciesResponse.setRelationship(dependencies.getRelationship());
+            dependenciesResponse.setId(dependencies.getId());
+
+
+
+        }
+
+       return dependenciesResponse;
     }
 }

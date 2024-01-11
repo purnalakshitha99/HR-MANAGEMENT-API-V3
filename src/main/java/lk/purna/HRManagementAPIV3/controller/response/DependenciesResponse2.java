@@ -10,4 +10,5 @@ public class DependenciesResponse2 {
 
     private Long id;
     private Integer total;
+    private String relationship;
 }

@@ -8,4 +8,5 @@ public class DependenciesRq {
 
     private Long id;
     private Integer total;
+    private String relationship;
 }

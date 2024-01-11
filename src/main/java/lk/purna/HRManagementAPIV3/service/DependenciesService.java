@@ -4,10 +4,11 @@ import lk.purna.HRManagementAPIV3.controller.request.DependenciesRq;
 import lk.purna.HRManagementAPIV3.controller.response.DependenciesResponse;
 import lk.purna.HRManagementAPIV3.controller.response.DependenciesResponse2;
 import lk.purna.HRManagementAPIV3.controller.response.MessageResponse;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
+@Service
 public interface DependenciesService {
 
     DependenciesResponse add(DependenciesRq dependenciesRq);
@@ -23,4 +24,6 @@ public interface DependenciesService {
     MessageResponse delete(Long id);
 
     DependenciesResponse update(Long id, DependenciesRq dependenciesRq);
+
+    DependenciesResponse addDependencies(Long employeeId,DependenciesRq dependenciesRq);
 }
