@@ -4,6 +4,8 @@ import lk.purna.HRManagementAPIV3.controller.request.DependenciesRq;
 import lk.purna.HRManagementAPIV3.controller.response.DependenciesResponse;
 import lk.purna.HRManagementAPIV3.controller.response.DependenciesResponse2;
 import lk.purna.HRManagementAPIV3.controller.response.MessageResponse;
+import lk.purna.HRManagementAPIV3.exception.DependenciesNotFoundException;
+import lk.purna.HRManagementAPIV3.exception.EmployeeNotFoundException;
 import lk.purna.HRManagementAPIV3.service.DependenciesService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +64,7 @@ public class DependenciesController {
 
     //dependencies add for employee
     @PostMapping("/employees/{employee-id}/dependencies")
-    public DependenciesResponse addDependencies(@PathVariable("employee-id")Long employeeId,@RequestBody DependenciesRq dependenciesRq){
+    public DependenciesResponse addDependencies(@PathVariable("employee-id")Long employeeId,@RequestBody DependenciesRq dependenciesRq)throws  EmployeeNotFoundException {
         System.out.println("add dependencies for employee");
 
       return   dependenciesService.addDependencies(employeeId,dependenciesRq);

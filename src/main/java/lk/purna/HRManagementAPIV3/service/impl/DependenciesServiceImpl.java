@@ -8,6 +8,8 @@ import lk.purna.HRManagementAPIV3.controller.request.DependenciesRq;
 import lk.purna.HRManagementAPIV3.controller.response.DependenciesResponse;
 import lk.purna.HRManagementAPIV3.controller.response.DependenciesResponse2;
 import lk.purna.HRManagementAPIV3.controller.response.MessageResponse;
+import lk.purna.HRManagementAPIV3.exception.DependenciesNotFoundException;
+import lk.purna.HRManagementAPIV3.exception.EmployeeNotFoundException;
 import lk.purna.HRManagementAPIV3.service.DependenciesService;
 import lombok.AllArgsConstructor;
 import org.aspectj.bridge.Message;
@@ -141,33 +143,34 @@ public class DependenciesServiceImpl implements DependenciesService {
     }
 
     @Override
-    public DependenciesResponse addDependencies(Long employeeId,DependenciesRq dependenciesRq) {
+    public DependenciesResponse addDependencies(Long employeeId,DependenciesRq dependenciesRq) throws  EmployeeNotFoundException {
 
         Optional<Employee> employeeOptional = employeeRepository.findById(employeeId);
 
         DependenciesResponse dependenciesResponse = new DependenciesResponse();
 
-        if (employeeOptional.isPresent()){
-
-            Employee employee = employeeOptional.get();
-
-            Dependencies dependencies = new Dependencies();
-
-            dependencies.setTotal(dependenciesRq.getTotal());
-            dependencies.setRelationship(dependenciesRq.getRelationship());
-
-            dependencies.setEmployee(employee);
-
-            dependenciesRepository.save(dependencies);
-
-            dependenciesResponse.setTotal(dependencies.getTotal());
-            dependenciesResponse.setRelationship(dependencies.getRelationship());
-            dependenciesResponse.setId(dependencies.getId());
+        if (!employeeOptional.isPresent()){
 
 
+            throw new EmployeeNotFoundException("Employee Not Found in the System :"+employeeId);
 
         }
+        Employee employee = employeeOptional.get();
 
-       return dependenciesResponse;
+        Dependencies dependencies = new Dependencies();
+
+        dependencies.setTotal(dependenciesRq.getTotal());
+        dependencies.setRelationship(dependenciesRq.getRelationship());
+
+        dependencies.setEmployee(employee);
+
+        dependenciesRepository.save(dependencies);
+
+        dependenciesResponse.setTotal(dependencies.getTotal());
+        dependenciesResponse.setRelationship(dependencies.getRelationship());
+        dependenciesResponse.setId(dependencies.getId());
+
+
+        return dependenciesResponse;
     }
 }

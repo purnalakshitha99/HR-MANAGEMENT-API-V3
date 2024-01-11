@@ -4,6 +4,8 @@ import lk.purna.HRManagementAPIV3.controller.request.DependenciesRq;
 import lk.purna.HRManagementAPIV3.controller.response.DependenciesResponse;
 import lk.purna.HRManagementAPIV3.controller.response.DependenciesResponse2;
 import lk.purna.HRManagementAPIV3.controller.response.MessageResponse;
+import lk.purna.HRManagementAPIV3.exception.DependenciesNotFoundException;
+import lk.purna.HRManagementAPIV3.exception.EmployeeNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,5 +27,5 @@ public interface DependenciesService {
 
     DependenciesResponse update(Long id, DependenciesRq dependenciesRq);
 
-    DependenciesResponse addDependencies(Long employeeId,DependenciesRq dependenciesRq);
+    DependenciesResponse addDependencies(Long employeeId,DependenciesRq dependenciesRq)throws  EmployeeNotFoundException;
 }
