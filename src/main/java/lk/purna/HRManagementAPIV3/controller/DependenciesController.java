@@ -79,5 +79,12 @@ public class DependenciesController {
     }
 
 
+    @GetMapping("/employees/{employee-id}/dependencies/{dependencies-id}")
+    public DependenciesResponse getSpecificDependencies(@PathVariable("employee-id")Long employeeId,@PathVariable("dependencies-id")Long dependenciesId)throws EmployeeNotFoundException,DependenciesNotFoundException{
+
+        System.out.println("get specific dependencies for employee");
+
+      return   dependenciesService.getSpecificDependencies(employeeId,dependenciesId);
+    }
 
 }

@@ -202,4 +202,36 @@ public class DependenciesServiceImpl implements DependenciesService {
         return dependenciesResponse2List;
 
    }
+
+    @Override
+    public DependenciesResponse getSpecificDependencies(Long employeeId, Long dependenciesId) throws EmployeeNotFoundException, DependenciesNotFoundException {
+
+        Optional<Employee> employeeOptional = employeeRepository.findById(employeeId);
+        DependenciesResponse dependenciesResponse = new DependenciesResponse();
+
+
+
+        if (employeeOptional.isPresent()){
+            throw new EmployeeNotFoundException("Employee Not Found in this System "+employeeId);
+
+        }
+
+        Employee employee = employeeOptional.get();
+        List<Dependencies> dependenciesList = employee.getDependenciesList();
+
+        Dependencies dependenciesToGetSpecific = dependenciesList.stream().filter(dependencies -> dependencies.getId().equals(dependenciesId)).findFirst().orElse(null);
+
+        if (dependenciesToGetSpecific == null){
+
+
+            throw new DependenciesNotFoundException("Dependencies not found in that system "+dependenciesId);
+
+
+        }
+        dependenciesResponse.setId(dependenciesId);
+        dependenciesResponse.setTotal(dependenciesToGetSpecific.getTotal());
+        dependenciesResponse.setRelationship(dependenciesToGetSpecific.getRelationship());
+
+        return dependenciesResponse;
+    }
 }

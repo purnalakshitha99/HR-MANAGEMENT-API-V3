@@ -30,4 +30,6 @@ public interface DependenciesService {
     DependenciesResponse addDependencies(Long employeeId,DependenciesRq dependenciesRq)throws  EmployeeNotFoundException;
 
     List<DependenciesResponse2> getDependencies(Long employeeId)throws EmployeeNotFoundException;
+
+    DependenciesResponse getSpecificDependencies(Long employeeId, Long dependenciesId)throws EmployeeNotFoundException,DependenciesNotFoundException;
 }
