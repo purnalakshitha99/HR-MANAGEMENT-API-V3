@@ -1,10 +1,13 @@
 package lk.purna.HRManagementAPIV3.controller;
 
+import jakarta.persistence.Id;
 import lk.purna.HRManagementAPIV3.controller.request.CreateInsuranceRq;
 import lk.purna.HRManagementAPIV3.controller.response.CreateInsuranceResponse;
 import lk.purna.HRManagementAPIV3.controller.response.CreateInsuranceResponse2;
+import lk.purna.HRManagementAPIV3.controller.response.IdResponse;
 import lk.purna.HRManagementAPIV3.controller.response.MessageResponse;
 import lk.purna.HRManagementAPIV3.service.InsuranceService;
+import org.hibernate.metamodel.mapping.internal.IdClassRepresentationStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +26,7 @@ public class InsuranceController {
 
     @GetMapping("/insurances/{id}")
 
-    public CreateInsuranceResponse get(@PathVariable int id){
+    public CreateInsuranceResponse get(@PathVariable Long id){
         return insuranceService.get(id);
     }
 
@@ -40,12 +43,12 @@ public class InsuranceController {
     }
 
     @DeleteMapping("/insurances/{id}")
-    public MessageResponse delete(@PathVariable int id){
+    public MessageResponse delete(@PathVariable Long id){
         return  insuranceService.delete(id);
     }
 
     @PutMapping("/insurances/{id}")
-    public CreateInsuranceResponse update(@PathVariable int id,@RequestBody CreateInsuranceRq createInsuranceRq){
+    public CreateInsuranceResponse update(@PathVariable Long id,@RequestBody CreateInsuranceRq createInsuranceRq){
         return insuranceService.update(id,createInsuranceRq);
     }
 
@@ -59,6 +62,26 @@ public class InsuranceController {
         System.out.println("insurance create ");
 
      return    insuranceService.create(id,createInsuranceRq);
+
+
+    }
+
+
+    @PutMapping("/employees/{employee-id}/insurances/{insurance-id}")
+    public CreateInsuranceResponse updateInsurance(@PathVariable("employee-id") Long employeeId ,@PathVariable("insurance-id")Long insuranceId,@RequestBody CreateInsuranceRq createInsuranceRq){
+
+        System.out.println("updateInsurances");
+
+       return insuranceService.updateInsurances(employeeId,insuranceId,createInsuranceRq);
+    }
+
+
+    @DeleteMapping("/employees/{employee-id}/insurances/{insurance-id}")
+    public IdResponse deleteInsurances(@PathVariable("employee-id")Long employeeId,@PathVariable("insurance-id")Long insurancesId){
+
+        System.out.println("delelele insurance by employee");
+
+        return  insuranceService.deleteInsurances(employeeId,insurancesId);
 
 
     }

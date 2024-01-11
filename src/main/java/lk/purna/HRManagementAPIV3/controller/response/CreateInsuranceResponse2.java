@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class CreateInsuranceResponse2 {
 
-    private int id;
+    private Long id;
     private String type;
     private String company;
 }

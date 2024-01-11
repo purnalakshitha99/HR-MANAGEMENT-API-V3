@@ -6,10 +6,7 @@ import lk.purna.HRManagementAPIV3.controller.model.Insurance;
 import lk.purna.HRManagementAPIV3.controller.repository.EmployeeRepository;
 import lk.purna.HRManagementAPIV3.controller.repository.InsuranceRepository;
 import lk.purna.HRManagementAPIV3.controller.request.CreateInsuranceRq;
-import lk.purna.HRManagementAPIV3.controller.response.CreateDepartmentResponse2;
-import lk.purna.HRManagementAPIV3.controller.response.CreateInsuranceResponse;
-import lk.purna.HRManagementAPIV3.controller.response.CreateInsuranceResponse2;
-import lk.purna.HRManagementAPIV3.controller.response.MessageResponse;
+import lk.purna.HRManagementAPIV3.controller.response.*;
 import lk.purna.HRManagementAPIV3.service.InsuranceService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +56,7 @@ public class InsuranceServiceImpl implements InsuranceService {
     }
 
     @Override
-    public CreateInsuranceResponse get(int id) {
+    public CreateInsuranceResponse get(Long id) {
 
         System.out.println("get insurances");
 
@@ -111,7 +108,7 @@ public class InsuranceServiceImpl implements InsuranceService {
     }
 
     @Override
-    public MessageResponse delete(int id) {
+    public MessageResponse delete(Long id) {
 
         insuranceRepository.deleteById(id);
 
@@ -125,7 +122,7 @@ public class InsuranceServiceImpl implements InsuranceService {
     }
 
     @Override
-    public CreateInsuranceResponse update(int id, CreateInsuranceRq createInsuranceRq) {
+    public CreateInsuranceResponse update(Long id, CreateInsuranceRq createInsuranceRq) {
 
         Optional<Insurance> insuranceOptional = insuranceRepository.findById(id);
 
@@ -195,5 +192,93 @@ public class InsuranceServiceImpl implements InsuranceService {
 
     }
 
+    @Override
+    public CreateInsuranceResponse updateInsurances(Long employeeId,Long insuranceId, CreateInsuranceRq createInsuranceRq) {
 
-}
+        Optional<Employee> employeeOptional = employeeRepository.findById(employeeId);
+
+        CreateInsuranceResponse createInsuranceResponse = new CreateInsuranceResponse();
+        if (employeeOptional.isPresent()){
+
+            Employee employee = employeeOptional.get();
+            List<Insurance>insuranceList = employee.getInsurancesList();
+
+
+
+           Insurance insuranceToUpdate = insuranceList.stream()
+                   .filter(insurance -> insurance.getId().equals(insuranceId)).findFirst().orElse(null);
+
+            if (insuranceToUpdate!=null){
+
+                insuranceToUpdate.setCompany(createInsuranceRq.getCompany());
+                insuranceToUpdate.setType(createInsuranceRq.getType());
+
+                insuranceToUpdate.setEmployee(employee);
+
+                insuranceRepository.save(insuranceToUpdate);
+
+                createInsuranceResponse.setId(insuranceId);
+                createInsuranceResponse.setCompany(insuranceToUpdate.getCompany());
+                createInsuranceResponse.setType(insuranceToUpdate.getType());
+
+
+
+
+            }
+
+        }
+
+        return createInsuranceResponse;
+
+    }
+
+
+
+
+
+
+
+    public IdResponse deleteInsurances(Long employeeId, Long insuranceId) {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
+        IdResponse idResponse = new IdResponse();
+        if (optionalEmployee.isPresent()) {
+            Employee employee = optionalEmployee.get();
+           List<Insurance> insuranceList = employee.getInsurancesList();
+
+
+//            System.out.println(insuranceList);
+
+            Insurance insuranceToDelete = insuranceList.stream()
+                    .filter(insurance -> insurance.getId().equals(insuranceId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (insuranceToDelete != null) {
+                insuranceList.remove(insuranceToDelete);
+//                employeeRepository.save(employee);
+                insuranceRepository.deleteById(insuranceId);
+
+
+                idResponse.setId(insuranceId);
+                return idResponse;
+            }
+            else {
+
+                System.out.println("insurance not found for the given employee");
+
+            }
+        }
+        else {
+
+            System.out.println("emp not found");
+        }
+
+        return idResponse;
+    }
+
+
+
+    }
+
+
+

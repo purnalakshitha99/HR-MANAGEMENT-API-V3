@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class CreateInsuranceRq {
 
-    private int id;
+    private Long id;
     private String type;
     private String company;
 
