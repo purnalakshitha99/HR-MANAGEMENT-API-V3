@@ -5,6 +5,7 @@ import lk.purna.HRManagementAPIV3.controller.response.CreateInsuranceResponse;
 import lk.purna.HRManagementAPIV3.controller.response.CreateInsuranceResponse2;
 import lk.purna.HRManagementAPIV3.controller.response.IdResponse;
 import lk.purna.HRManagementAPIV3.controller.response.MessageResponse;
+import lk.purna.HRManagementAPIV3.exception.EmployeeNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public interface InsuranceService {
 
     List<CreateInsuranceResponse2> getAll2(CreateInsuranceRq createInsuranceRq);
 
-    CreateInsuranceResponse create(Long id,CreateInsuranceRq createInsuranceRq);
+    CreateInsuranceResponse create(Long id,CreateInsuranceRq createInsuranceRq)throws EmployeeNotFoundException;
 
     CreateInsuranceResponse updateInsurances(Long employeeId,Long insuranceId, CreateInsuranceRq createInsuranceRq);
 

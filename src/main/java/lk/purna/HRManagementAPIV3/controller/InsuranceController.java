@@ -6,6 +6,7 @@ import lk.purna.HRManagementAPIV3.controller.response.CreateInsuranceResponse;
 import lk.purna.HRManagementAPIV3.controller.response.CreateInsuranceResponse2;
 import lk.purna.HRManagementAPIV3.controller.response.IdResponse;
 import lk.purna.HRManagementAPIV3.controller.response.MessageResponse;
+import lk.purna.HRManagementAPIV3.exception.EmployeeNotFoundException;
 import lk.purna.HRManagementAPIV3.service.InsuranceService;
 import org.hibernate.metamodel.mapping.internal.IdClassRepresentationStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ public class InsuranceController {
     //insurance
 
     @PostMapping("/employees/{id}/insurances")
-    public CreateInsuranceResponse create(@PathVariable Long id,@RequestBody CreateInsuranceRq createInsuranceRq){
+    public CreateInsuranceResponse create(@PathVariable Long id,@RequestBody CreateInsuranceRq createInsuranceRq)throws EmployeeNotFoundException {
 
 
         System.out.println("insurance create ");

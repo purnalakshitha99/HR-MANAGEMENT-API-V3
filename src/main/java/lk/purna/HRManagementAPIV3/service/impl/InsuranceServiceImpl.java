@@ -7,6 +7,7 @@ import lk.purna.HRManagementAPIV3.controller.repository.EmployeeRepository;
 import lk.purna.HRManagementAPIV3.controller.repository.InsuranceRepository;
 import lk.purna.HRManagementAPIV3.controller.request.CreateInsuranceRq;
 import lk.purna.HRManagementAPIV3.controller.response.*;
+import lk.purna.HRManagementAPIV3.exception.EmployeeNotFoundException;
 import lk.purna.HRManagementAPIV3.service.InsuranceService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,33 +163,33 @@ public class InsuranceServiceImpl implements InsuranceService {
 
     //insurance service
 
-    public CreateInsuranceResponse create(Long id,CreateInsuranceRq createInsuranceRq){
+    public CreateInsuranceResponse create(Long id,CreateInsuranceRq createInsuranceRq)throws EmployeeNotFoundException {
 
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
 
-        if (optionalEmployee.isPresent()){
+        if (!optionalEmployee.isPresent()){
 
-            Employee employee = optionalEmployee.get();
-
-            Insurance insurance = new Insurance();
-
-            insurance.setType(createInsuranceRq.getType());
-            insurance.setCompany(createInsuranceRq.getCompany());
-            insurance.setEmployee(employee);
-
-            insuranceRepository.save(insurance);
-
-            CreateInsuranceResponse createInsuranceResponse = new CreateInsuranceResponse();
-
-            createInsuranceResponse.setId(insurance.getId());
-            createInsuranceResponse.setCompany(insurance.getCompany());
-            createInsuranceResponse.setType(insurance.getType());
-
-            return createInsuranceResponse;
+           throw new EmployeeNotFoundException("that employee not in the system "+id);
 
         }
 
-        return null;
+        Employee employee = optionalEmployee.get();
+
+        Insurance insurance = new Insurance();
+
+        insurance.setType(createInsuranceRq.getType());
+        insurance.setCompany(createInsuranceRq.getCompany());
+        insurance.setEmployee(employee);
+
+        insuranceRepository.save(insurance);
+
+        CreateInsuranceResponse createInsuranceResponse = new CreateInsuranceResponse();
+
+        createInsuranceResponse.setId(insurance.getId());
+        createInsuranceResponse.setCompany(insurance.getCompany());
+        createInsuranceResponse.setType(insurance.getType());
+
+        return createInsuranceResponse;
 
     }
 
